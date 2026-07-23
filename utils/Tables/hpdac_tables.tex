@@ -1,0 +1,360 @@
+% =====================================================================
+%  Hp-DAC — LaTeX TABLE STANDARD
+%
+%  Self-contained. Upload to Overleaf and press Recompile: the PDF shows
+%  every template rendered, and the source below each banner is what you
+%  copy into your own document.
+%
+%  To use in a real manuscript:
+%    1. copy the PREAMBLE block into your own preamble;
+%    2. copy the template closest to what you need;
+%    3. edit the caption, label, column format and data.
+%
+%  Project: Hp-DAC (ANP / Repsol Sinopec Brasil, POLO-UFSC)
+% =====================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------------------
+%  PREAMBLE — copy this block into your manuscript
+% ---------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}          % same font family as the figures
+\usepackage{amsmath}
+
+\usepackage{booktabs}         % \toprule \midrule \bottomrule \cmidrule
+\usepackage{array}            % column type tuning
+\usepackage{siunitx}          % number alignment and units
+\usepackage{threeparttable}   % table notes tied to the table
+\usepackage{longtable}        % tables that break across pages
+\usepackage{pdflscape}        % landscape page for very wide tables
+\usepackage{caption}
+
+%  per-mode=power is the important one: it typesets \unit{\watt\per\metre}
+%  as W m^{-1}, matching the negative exponents used on the figure axes.
+%  A solidus is banned in this project because it is ambiguous with two
+%  denominators: "W/m K" can be read two ways.
+\sisetup{
+  per-mode            = power,
+  exponent-product    = \times,
+  separate-uncertainty= true,   % 5.27 +- 0.15 rather than 5.27(15)
+  detect-all,                   % inherit the surrounding font
+  table-align-uncertainty = true,
+  group-digits        = integer,
+  group-minimum-digits= 5,      % 1234 stays 1234; 12345 becomes 12 345
+}
+
+\captionsetup[table]{skip=6pt}  % caption sits above the table
+% ---------------------------------------------------------------------
+
+\usepackage[margin=25mm]{geometry}
+\usepackage{hyperref}
+
+\title{Hp-DAC --- LaTeX Table Standard}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{House rules}
+
+\begin{enumerate}
+  \item \textbf{\texttt{booktabs} rules only.} One \verb|\toprule|, one
+        \verb|\midrule| under the header, one \verb|\bottomrule|.
+        \emph{No vertical rules, ever. No \texttt{\textbackslash hline}.}
+        A vertical rule almost always means the table should be split or
+        transposed.
+  \item \textbf{Caption above the table}, sentence case, ending in a full
+        stop. Figures take the caption below; tables above.
+  \item \textbf{Header carries the symbol and the unit} in square brackets,
+        dimensionless as [--]. Units use negative exponents:
+        \verb|[kg h$^{-1}$]|, never \verb|[kg/h]|. Keep the symbol identical
+        to the one used in the figures and the nomenclature list.
+  \item \textbf{Decimals match the measurement} and stay consistent down a
+        column: \num{5.27} and \num{4.32}, never \num{5.27} and 4.3.
+        An uncertainty carries the same decimals as its value.
+  \item \textbf{Missing entries are \texttt{--}}, never blank.
+  \item \textbf{Label as \texttt{tab:name}}, hyphenated, matching the file
+        name if the table lives in its own file.
+  \item \textbf{Never use \texttt{\textbackslash resizebox} on a table.}
+        Shrinking the font to fit is a sign of too many columns: split the
+        table, transpose it, or use the landscape template.
+\end{enumerate}
+
+\clearpage
+% =====================================================================
+%  TEMPLATE 1 — BASIC RESULTS TABLE
+%  The default. Use it unless you need one of the others.
+%  Column format: l for text, c for numbers of equal width.
+% =====================================================================
+\section*{Template 1 --- basic results table}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Mean performance of each prototype version.}
+  \label{tab:mean-values}
+  \begin{tabular}{lccc}
+    \toprule
+    Version & $\dot{m}_\mathrm{f}$ [kg h$^{-1}$]
+            & $COP$ [--]
+            & $\eta_\mathrm{II}$ [--] \\
+    \midrule
+    1 &  834.2 & 5.27 & 0.50 \\
+    2 &  845.1 & 4.32 & 0.60 \\
+    3 & 1219.4 & 2.68 & 0.70 \\
+    4 & 1326.0 & 1.59 & 0.80 \\
+    5 & 1541.3 & 0.79 & 0.90 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =====================================================================
+%  TEMPLATE 2 — DECIMAL ALIGNMENT WITH siunitx
+%  Preferred whenever a column holds numbers with different digit counts.
+%
+%  S[table-format=4.1] reserves 4 integer digits and 1 decimal.
+%  CATCH: a header inside an S column MUST be wrapped in braces {...},
+%  otherwise siunitx tries to parse it as a number and the compile fails
+%  with "Missing number, treated as zero". This is the most common error.
+% =====================================================================
+\section*{Template 2 --- decimal alignment}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Heating capacity and coefficient of performance, decimal
+           aligned on the S columns.}
+  \label{tab:aligned}
+  \begin{tabular}{l
+                  S[table-format=4.1]
+                  S[table-format=1.2]
+                  S[table-format=2.2]}
+    \toprule
+    Version & {$\dot{m}_\mathrm{f}$ [kg h$^{-1}$]}
+            & {$COP$ [--]}
+            & {$\dot{Q}_\mathrm{H}$ [kW]} \\
+    \midrule
+    1 &  834.2 & 5.27 & 12.40 \\
+    2 &  845.1 & 4.32 & 18.03 \\
+    3 & 1219.4 & 2.68 & 24.60 \\
+    4 & 1326.0 & 1.59 & 31.17 \\
+    5 & 1541.3 & 0.79 & 38.90 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\clearpage
+% =====================================================================
+%  TEMPLATE 3 — MEASUREMENTS WITH UNCERTAINTY
+%  table-format=1.2(2) means 1 integer digit, 2 decimals, 2 uncertainty
+%  digits. With separate-uncertainty=true (set in the preamble) siunitx
+%  prints 5.27 +- 0.15 and aligns the +- signs.
+%
+%  Write the value in the source as 5.27(15) -- the parenthesis carries
+%  the uncertainty in units of the last decimal.
+% =====================================================================
+\section*{Template 3 --- uncertainties}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Measured coefficient of performance with expanded uncertainty
+           ($k = 2$).}
+  \label{tab:uncertainty}
+  \begin{tabular}{l
+                  S[table-format=4.0]
+                  S[table-format=1.2(2)]
+                  S[table-format=2.1]}
+    \toprule
+    Version & {$\dot{m}_\mathrm{f}$ (kg h$^{-1}$)}
+            & {$COP$ (--)}
+            & {$\Delta T_\mathrm{lift}$ (K)} \\
+    \midrule
+    1 &  834 & 5.27(15) & 65.0 \\
+    2 &  845 & 4.32(12) & 68.4 \\
+    3 & 1219 & 2.68(9)  & 71.2 \\
+    4 & 1326 & 1.59(7)  & 74.8 \\
+    5 & 1541 & 0.79(5)  & 78.1 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =====================================================================
+%  TEMPLATE 4 — GROUPED COLUMN HEADERS
+%  \cmidrule(lr){2-3} draws a partial rule under a group. The (lr) trims
+%  it so adjacent groups do not touch. Never use a full-width \midrule
+%  inside the body to separate groups.
+%
+%  NOTE the last column: table-format=+2.1 reserves a slot for the minus
+%  sign. Without the +, a negative value is wider than declared and LaTeX
+%  reports "Overfull \hbox" -- the usual cause of that warning in a table.
+% =====================================================================
+\section*{Template 4 --- grouped headers}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Measured and predicted performance for each prototype version.}
+  \label{tab:grouped}
+  \begin{tabular}{l
+                  S[table-format=1.2] S[table-format=2.2]
+                  S[table-format=1.2] S[table-format=2.2]
+                  S[table-format=+2.1]}
+    \toprule
+    & \multicolumn{2}{c}{Measured} & \multicolumn{2}{c}{Predicted}
+    & {Deviation} \\
+    \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+    Version & {$COP$ (--)} & {$\dot{Q}_\mathrm{H}$ (kW)}
+            & {$COP$ (--)} & {$\dot{Q}_\mathrm{H}$ (kW)}
+            & {(\%)} \\
+    \midrule
+    1 & 5.27 & 12.40 & 5.19 & 12.61 &  1.7 \\
+    2 & 4.32 & 18.03 & 4.41 & 17.88 & -2.1 \\
+    3 & 2.68 & 24.60 & 2.63 & 24.92 &  1.9 \\
+    4 & 1.59 & 31.17 & 1.64 & 30.85 & -3.1 \\
+    5 & 0.79 & 38.90 & 0.77 & 39.44 &  2.5 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\clearpage
+% =====================================================================
+%  TEMPLATE 5 — PARAMETERS TABLE WITH NOTES
+%  For model inputs, boundary conditions and assumptions. Mixed text and
+%  numbers, so plain c columns rather than S.
+%
+%  threeparttable keeps the notes the same width as the table and ties
+%  \tnote{a} in the body to \item[a] in the notes.
+% =====================================================================
+\section*{Template 5 --- parameters, with table notes}
+
+\begin{table}[!htb]
+  \centering
+  \begin{threeparttable}
+    \caption{Boundary conditions and model parameters used in the
+             simulations.}
+    \label{tab:parameters}
+    \begin{tabular}{llcc}
+      \toprule
+      Parameter & Symbol & Value & Unit \\
+      \midrule
+      Heat source inlet temperature   & $T_\mathrm{source}$ & 25.0 & $^{\circ}$C \\
+      Heat sink outlet temperature    & $T_\mathrm{sink}$   & 90.0 & $^{\circ}$C \\
+      Isentropic efficiency\tnote{a}  & $\eta_\mathrm{is}$  & 0.70 & -- \\
+      Capture capacity                & $\dot{m}_\mathrm{CO_2}$ & 5000 & t yr$^{-1}$ \\
+      Discount rate\tnote{b}          & $r$                 & 0.08 & -- \\
+      Plant lifetime                  & $n$                 & 20   & yr \\
+      Pressure drop                   & $\Delta p$          & --   & kPa \\
+      \bottomrule
+    \end{tabular}
+    \begin{tablenotes}[flushleft]\footnotesize
+      \item[a] Assumed constant over the operating envelope.
+      \item[b] Taken from the optimised case of Teixeira and Nunes (2024).
+    \end{tablenotes}
+  \end{threeparttable}
+\end{table}
+
+% =====================================================================
+%  TEMPLATE 6 — TABLE THAT BREAKS ACROSS PAGES
+%  longtable is its own environment: no surrounding \begin{table}, and
+%  the caption goes inside. \endfirsthead / \endhead repeat the header.
+% =====================================================================
+\section*{Template 6 --- multi-page table}
+
+\begin{longtable}{l S[table-format=4.1] S[table-format=1.2]}
+  \caption{Full test matrix.} \label{tab:long} \\
+  \toprule
+  Test & {$\dot{m}_\mathrm{f}$ (kg h$^{-1}$)} & {$COP$ (--)} \\
+  \midrule
+  \endfirsthead
+  \multicolumn{3}{l}{\footnotesize\itshape Table \ref{tab:long}, continued}\\
+  \toprule
+  Test & {$\dot{m}_\mathrm{f}$ (kg h$^{-1}$)} & {$COP$ (--)} \\
+  \midrule
+  \endhead
+  \midrule
+  \multicolumn{3}{r}{\footnotesize\itshape continued on the next page}\\
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  T01 &  834.2 & 5.27 \\
+  T02 &  845.1 & 4.32 \\
+  T03 & 1219.4 & 2.68 \\
+  T04 & 1326.0 & 1.59 \\
+  T05 & 1541.3 & 0.79 \\
+\end{longtable}
+
+% =====================================================================
+%  TEMPLATE 7 — VERY WIDE TABLE
+%  Rotate the page rather than shrinking the font. pdflscape rotates the
+%  PDF page itself, so the table is readable on screen without tilting
+%  your head. Use this instead of \resizebox.
+%
+%  Count the digits before writing table-format: T_sink reaches 120.0, so
+%  it is 3.1 and not 2.1. Declaring too few digits is the second common
+%  cause of an "Overfull \hbox" warning.
+% =====================================================================
+\begin{landscape}
+\section*{Template 7 --- wide table on a landscape page}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Full performance map of the heat pump across the operating
+           envelope.}
+  \label{tab:wide}
+  \begin{tabular}{l
+                  S[table-format=2.1] S[table-format=3.1]
+                  S[table-format=1.2] S[table-format=2.2]
+                  S[table-format=2.2] S[table-format=1.3]
+                  S[table-format=3.1]}
+    \toprule
+    Case & {$T_\mathrm{source}$ ($^{\circ}$C)}
+         & {$T_\mathrm{sink}$ ($^{\circ}$C)}
+         & {$COP$ (--)}
+         & {$\dot{Q}_\mathrm{H}$ (kW)}
+         & {$\dot{W}_\mathrm{cp}$ (kW)}
+         & {$\eta_\mathrm{II}$ (--)}
+         & {$\Delta T_\mathrm{lift}$ (K)} \\
+    \midrule
+    A & 25.0 & 80.0 & 3.42 & 12.40 &  3.63 & 0.512 &  55.0 \\
+    B & 25.0 & 90.0 & 2.87 & 18.03 &  6.28 & 0.478 &  65.0 \\
+    C & 35.0 & 90.0 & 3.16 & 24.60 &  7.78 & 0.495 &  55.0 \\
+    D & 35.0 & 110.0 & 2.24 & 31.17 & 13.92 & 0.441 &  75.0 \\
+    E & 45.0 & 120.0 & 2.05 & 38.90 & 18.98 & 0.428 &  75.0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\end{landscape}
+
+\clearpage
+\section*{Quick reference}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Column types and when to use them.}
+  \label{tab:column-types}
+  \begin{tabular}{ll}
+    \toprule
+    Column format & Use for \\
+    \midrule
+    \verb|l|                        & Text: case names, versions, descriptions \\
+    \verb|c|                        & Numbers already of equal width \\
+    \verb|S[table-format=4.1]|      & Numbers to align on the decimal point \\
+    \verb|S[table-format=1.2(2)]|   & Value with uncertainty \\
+    \verb|S[table-format=2.1e1]|    & Scientific notation \\
+    \verb|p{30mm}|                  & Wrapped text of fixed width \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\noindent
+\textbf{Do not use:} \verb!|! between columns, \verb|\hline|,
+\verb|\resizebox|, \verb|\small| to make a table fit, or a caption below
+the table.
+
+\bigskip
+\noindent
+\textbf{Units, quick check.} Write \verb|(kg h$^{-1}$)| in a plain header,
+or \verb|\unit{\kilogram\per\hour}| if you prefer siunitx to typeset it ---
+with \verb|per-mode=power| both give the same result. Never write
+\verb|(kg/h)|.
+
+\end{document}
