@@ -1,0 +1,4 @@
+# Hp-DAC plotting standard
+matplotlib==3.10.*
+numpy>=1.24
+jupyterlab>=4.0     # only needed to run the notebooks

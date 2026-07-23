@@ -35,6 +35,96 @@ else it does happens on import, through `plt.rcParams`.
 
 ---
 
+## Requirements
+
+Two packages, both almost certainly already installed.
+
+| Package | Minimum | Why |
+|---|---|---|
+| `matplotlib` | 3.6 | The plots. 3.6 is where `legend(ncols=...)` appeared. |
+| `numpy` | 1.24 | Array handling in the example scripts. |
+
+Add `jupyterlab` only if you want to run the notebooks rather than the
+scripts in `cases/`.
+
+### Install
+
+```bash
+pip install -r requirements.txt
+```
+
+```
+# requirements.txt
+matplotlib==3.10.*
+numpy>=1.24
+jupyterlab>=4.0     # only to run the notebooks
+```
+
+Without the pins:
+
+```bash
+pip install "matplotlib>=3.6" numpy jupyterlab
+```
+
+With conda:
+
+```bash
+conda create -n hpdac -c conda-forge python=3.12 matplotlib numpy jupyterlab
+conda activate hpdac
+```
+
+**Pin matplotlib.** Minor releases move default tick placement, so an
+unpinned environment produces figures that differ between machines and drift
+over time. `matplotlib==3.10.*` is what the standard was built against.
+
+### Font (optional)
+
+The style asks for **Latin Modern Roman** — the LaTeX font — so that figure
+text matches the manuscript. If it is missing, matplotlib falls back to
+DejaVu Serif without an error: everything still runs, the figures just look
+slightly different.
+
+| System | Command |
+|---|---|
+| Debian / Ubuntu | `sudo apt install fonts-lmodern` |
+| macOS | `brew install --cask font-latin-modern` |
+| Windows | Install MiKTeX or TeX Live, or download from [GUST](https://www.gust.org.pl/projects/e-foundry/latin-modern) |
+
+Any TeX distribution already provides it, so if you compile LaTeX on the
+machine you likely have it. After installing, clear the matplotlib font
+cache:
+
+```python
+import matplotlib.font_manager as fm
+fm._load_fontmanager(try_read_cache=False)
+```
+
+### Checking the environment
+
+```python
+import matplotlib, numpy
+import matplotlib.font_manager as fm
+
+print("matplotlib", matplotlib.__version__)
+print("numpy     ", numpy.__version__)
+print("Latin Modern Roman found:",
+      "Latin Modern Roman" in {f.name for f in fm.fontManager.ttflist})
+```
+
+### Only for `usetex=True`
+
+The style does **not** enable `text.usetex`, so no LaTeX installation is
+needed. If you turn it on for camera-ready figures, you additionally need a
+TeX distribution with `lmodern`, `amsmath` and `siunitx`, plus `dvipng` and
+Ghostscript. On Debian/Ubuntu:
+
+```bash
+sudo apt install texlive-latex-extra texlive-fonts-recommended \
+                 texlive-science dvipng ghostscript cm-super
+```
+
+---
+
 ## Quick start
 
 1. `from hpdac.utils.plotstyle import COLORS, MARKERS, MM` at the top of the
@@ -307,9 +397,9 @@ than a reader can track.
 **`scatter` ignored the marker.** `scatter` does not consume the marker
 cycle. Use `plot(..., ls="none")`, or pass `marker=MARKERS[i]` explicitly.
 
-**The font is not Latin Modern.** The font is not installed; matplotlib fell
-back to DejaVu Serif. Install `lmodern` (TeX Live) or `cm-super`, then clear
-the cache with `matplotlib.font_manager._load_fontmanager(try_read_cache=False)`.
+**The font is not Latin Modern.** The font is not installed and matplotlib
+fell back to DejaVu Serif — silently, which is why it is easy to miss. See
+[Font (optional)](#font-optional).
 
 **Labels are cut off in the saved file.** `bbox_inches="tight"` is missing
 from the `savefig` call, or a manually placed colour bar is fighting
