@@ -19,7 +19,5 @@ utilities used to produce figures and tables for reports and papers.
 - **Grid models** — renewable generation (solar, wind) and grid supply,
   thermal and electrical energy storage, and dispatch of the coupled
   generation–storage–heat pump system.
-- **Thermoeconomics** — CAPEX/OPEX models and Levelized Cost of Carbon
-  Capture (LCCC) calculations.
 - **Shared utilities** — standard matplotlib style and plotting functions,
   LaTeX table writers, unit handling and property-library wrappers.
