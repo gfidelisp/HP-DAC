@@ -10,8 +10,8 @@ There is no API to learn. You write ordinary matplotlib.
 from hpdac.utils.plotstyle import COLORS, MARKERS, MM
 
 fig, ax = plt.subplots()
-ax.plot(x1, y1, ls="none", label="Series 1")   # blue circles, automatically
-ax.plot(x2, y2, ls="none", label="Series 2")   # orange squares, automatically
+ax.plot(x1, y1, ls="none", label="Series 1")   # navy circles, automatically
+ax.plot(x2, y2, ls="none", label="Series 2")   # steel squares, automatically
 ax.set_xlabel("Mass flow rate [kg h$^{-1}$]")
 ax.set_ylabel("Coefficient of performance [-]")
 ax.legend(loc="upper right")
@@ -29,6 +29,7 @@ fig.savefig("figures/cop_versus_flow.pdf", bbox_inches="tight")
 |---|---|
 | `plotstyle.py` | The whole standard. Importing it applies the style. |
 | `../../../notebooks/hpdac_plot_standard.ipynb` | Runnable reference with three worked examples |
+| [`hpdac_tables.tex`](../../../latex/hpdac_tables.tex) | The companion standard for LaTeX tables — self-contained, compiles in Overleaf |
 
 `plotstyle.py` exports three names: `COLORS`, `MARKERS` and `MM`. Everything
 else it does happens on import, through `plt.rcParams`.
@@ -141,9 +142,9 @@ If you are working in a notebook outside the package, copy the body of
 ## How the property cycle works
 
 Colour, marker and dash pattern are zipped into a single `axes.prop_cycle`,
-so consecutive `plot` calls advance through all three together. Two
+so consecutive `plot` calls advance through all three together. Three
 independent channels identify each series, which means the figure survives
-greyscale printing and colour vision deficiency.
+greyscale printing, photocopying and colour vision deficiency.
 
 | You write | You get |
 |---|---|
@@ -151,6 +152,7 @@ greyscale printing and colour vision deficiency.
 | `ax.plot(x, y, marker="none")` | Line only — the model case |
 | `ax.plot(x, y)` | Both, joined markers |
 | `ax.errorbar(x, y, yerr=e, ls="none")` | Marker and colour from the cycle |
+| `ax.hist(x)` | Filled bars, white separators, automatic bins |
 | `ax.scatter(x, y)` | Colour only — `scatter` ignores the marker cycle |
 
 Prefer `plot(..., ls="none")` over `scatter` unless you need per-point sizes
@@ -169,18 +171,25 @@ Then give the legend two extra entries — one marker handle labelled
 *Measured*, one dashed line labelled *Model* — instead of listing every
 series twice.
 
-**Palette.** Okabe–Ito, eight entries, in order:
+**Palette.** A formal navy-to-grey ramp with a single rust accent, chosen
+for company reports rather than journal papers. Series are separated mainly
+by marker shape and dash pattern; colour is a secondary cue.
 
-| # | Colour | Hex | Marker |
-|---|---|---|---|
-| 1 | blue | `#0072B2` | `o` |
-| 2 | vermillion | `#D55E00` | `s` |
-| 3 | bluish green | `#009E73` | `^` |
-| 4 | reddish purple | `#CC79A7` | `D` |
-| 5 | orange | `#E69F00` | `v` |
-| 6 | sky blue | `#56B4E9` | `P` |
-| 7 | grey | `#666666` | `X` |
-| 8 | black | `#000000` | `*` |
+| # | Colour | Hex | Marker | Grey value |
+|---|---|---|---|---|
+| 1 | deep navy | `#14304A` | `o` | 49 |
+| 2 | steel blue | `#6C8FA8` | `s` | 137 |
+| 3 | rust | `#8C3A26` | `^` | 84 |
+| 4 | pale steel | `#B4C0C8` | `D` | 188 |
+| 5 | slate | `#2C3E4C` | `v` | 62 |
+| 6 | olive | `#A39A6B` | `P` | 151 |
+| 7 | mid grey | `#767676` | `X` | 117 |
+| 8 | black | `#000000` | `*` | 0 |
+
+The first four are at least 35 grey levels apart, so a photocopy or a
+black-and-white printout stays readable. Rust is the only saturated colour:
+give it to the series that carries the message and leave the rest in the
+blue-grey range.
 
 For a continuous third variable use `cmap="cividis"` — perceptually uniform
 and colour-blind safe. Do not use `jet` or `rainbow`: they create apparent
@@ -307,7 +316,7 @@ preflight checks.
 
 | Item | Value |
 |---|---|
-| Series colours | Okabe–Ito, 8 entries, colour-blind safe |
+| Series colours | Navy-to-grey ramp, one rust accent, 8 entries |
 | Series markers | `o s ^ D v P X *`, advancing with the colour |
 | Marker edges | Black, 1.1 pt |
 | Font | Latin Modern Roman; 11 pt body, 13 pt axis labels, 12 pt ticks |
